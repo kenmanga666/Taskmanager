@@ -11,9 +11,8 @@ page where you'll be able to choose between the following options:
 - Open the Task Manager of the gategory of task you want to manage.
 - Open the "Speedy Task Manager" (named "Speedy Manager)
 
-| :exclamation: Aware                       |
-|:------------------------------------------|
-|  Go see the "Features inside the Task Manager" section to see what you can do inside the Task Manager. |
+> [!TIP]
+> Go see the "Features inside the Task Manager" section to see what you can do inside the Task Manager.
 
 - Exit the Task Manager.
 
@@ -25,7 +24,7 @@ page where you'll be able to choose between the following options:
 4. Run the application via the Makefile with the command: `make run`.
 
 > [!WARNING]
->The Makefile doesn't work for now (json problems)
+> **The Makefile doesn't work for now (json problems)**
 
 - For now, you can run the application by running the `mainPage.java` file. (I'm working on fixing the Makefile)
 
@@ -42,9 +41,8 @@ The Task Manager will prompt you all the task you have in the category you chose
     - Add subtasks to a task.
     - Remove subtasks from a task.
 
-| :memo:        | Take note of this       |
-|---------------|:------------------------|
-| The Task Manager will save the tasks in a json file named after the category you chose. The task are automatically saved when you add or edit a task and also when you quit it. |
+> [!NOTE]
+> The Task Manager will save the tasks in a json file named after the category you chose. The task are automatically saved when you add or edit a task and also when you quit it.
 
 ## Features inside the Speedy Manager
 The Speedy Manager is a faster version of the Task Manager where you can add tasks without having to enter the task's category file.
@@ -64,9 +62,22 @@ Inside the Speedy Manager, you'll be able to:
     - Add subtasks to a task.
     - Remove subtasks from a task.
 
-| :memo:        | Take note of this       |
-|---------------|:------------------------|
-| |The Speedy Manager will save the tasks in a json file named after the category you chose for each task. The task are automatically saved when you add, or edit a task and also when you quit it. |
-| |Remember that with the Speedy Manager you'll be able to access the tasks you added only by using the Speedy Manager in the current session |
+> [!NOTE]
+> The Speedy Manager will save the tasks in a json file named after the category you chose for each task. The task are automatically saved when you add, or edit a task and also when you quit it.
+>Remember that with the Speedy Manager you'll be able to access the tasks you added only by using the Speedy Manager in the current session.
 
 ## Structure of the Code
+
+The source code is organized in several classes:
+- `MainPage` : The main class containing the method `main` and the Main Menu of the application that allows you to choose between the Task Manager and the Speedy Manager.
+- `TaskManager` : The class that contains the logic of the Task Manager and the Speedy Manager.
+- `SubTaskManager` : The class that contains the logic of the SubTask Manager and the management of the subTasks.
+- `Task` : Representation of a task with methods for the creation and management of the task and subTasks.
+- `TaskDetails` : The class that contains the logic behind the 'Open Task' button and the management of the task's details (title, priority, description, category).
+- `TaskListCellRenderer` : The class that contains the logic behind the rendering of the tasks in the list (to display the task's title center in the list and color according to the priority of the task).
+
+## Authors
+Vallée Kenny
+---
+
+Enjoy managing your tasks with the Task Manager! If you have any questions or suggestions, feel free to share them.
