@@ -8,10 +8,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
 
-public class subTaskManager extends JFrame {
+public class SubTaskManager extends JFrame {
     private DefaultListModel<Task> subTaskListModel = new DefaultListModel<>();
 
-    public subTaskManager(Task currentTask, String frameTitle, String filepath) {
+    public SubTaskManager(Task currentTask, String frameTitle, String filepath) {
         setTitle(frameTitle);
         setSize(500, 300);
         setLocationRelativeTo(null);

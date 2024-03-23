@@ -9,11 +9,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.*;
 
-public class mainPage extends JFrame{
+public class MainPage extends JFrame{
     private DefaultListModel<Category> model = new DefaultListModel<>();
     private JList<Category> categoryList = new JList<Category>();
     
-    private mainPage() {
+    private MainPage() {
         setTitle("Main Page");
         setSize(500, 300);
         setLocationRelativeTo(null);
@@ -124,7 +124,7 @@ public class mainPage extends JFrame{
     }
 
     public static void main(String[] args) {
-        mainPage mainPage = new mainPage();
+        MainPage mainPage = new MainPage();
         mainPage.setVisible(true);
     }
 }

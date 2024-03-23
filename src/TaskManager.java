@@ -26,7 +26,7 @@ public class TaskManager extends JFrame {
             public void windowClosing(WindowEvent e) {
                 saveTasksByCategory();
                 // Close the task manager and return to the main page
-                mainPage.main(null);
+                MainPage.main(null);
             }
         });
         setLocationRelativeTo(null);
@@ -141,7 +141,7 @@ public class TaskManager extends JFrame {
             int selectedIndex = taskList.getSelectedIndex();
             if (selectedIndex != -1) {
                 Task selectedTask = taskListModel.getElementAt(selectedIndex);
-                subTaskManager subTaskManagerWindow = new subTaskManager(selectedTask, selectedTask.getTitle() + " Subtasks", selectedTask.getFilepath());
+                SubTaskManager subTaskManagerWindow = new SubTaskManager(selectedTask, selectedTask.getTitle() + " Subtasks", selectedTask.getFilepath());
                 subTaskManagerWindow.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a task to manage subtasks", "Error", JOptionPane.ERROR_MESSAGE);
