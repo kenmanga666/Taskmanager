@@ -1,0 +1,13 @@
+# Ignore .json files including json files in subdirectories
+*.json
+**/*.json
+
+# Ignore .txt files including txt files in subdirectories
+*.txt
+**/*.txt
+
+# Ignore .vscode folder
+.vscode
+
+# Ignore .jar files
+*.jar
