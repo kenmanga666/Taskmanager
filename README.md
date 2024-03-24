@@ -4,17 +4,7 @@ Welcome to my Task Manager, this little application was developed in Java and al
 
 ## How to Use
 
-The Task Manager allows you to manage your tasks with a User Interface (UI) that is easy to use. You can add, remove, list, and save your tasks to a file. (further features will be added in the future).
-
-At the start of the application, you will be prompted to the main
-page where you'll be able to choose between the following options:
-- Open the Task Manager of the category of task you want to manage.
-- Open the "Speedy Task Manager" (named "Speedy Manager)
-
-> [!TIP]
-> Go see the "Features inside the Task Manager" section to see what you can do inside the Task Manager.
-
-- Exit the Task Manager.
+The Task Manager allows you to manage your tasks with a User Interface (UI) that is easy to use. You can add, remove, list, and save your tasks to files according to the category of the task. (further features will be added in the future).
 
 ## Instructions to Run the Application
 
@@ -27,6 +17,25 @@ page where you'll be able to choose between the following options:
 > **The Makefile doesn't work for now (json import problems)**
 
 - For now, you can run the application by running the `mainPage.java` file. (I'm working on fixing the Makefile)
+
+## Start of the Application / Main Menu
+At the start of the application, you will be prompted to the main
+page where you'll be able to choose between the following options:
+- Add a Category of tasks.
+- Remove a Category of tasks.
+
+> [!NOTE]
+> The categories are the different types of tasks you want to manage (e.g. Work, Personal, School, etc.)
+> You can add as many categories as you want.
+> When you remove a category, all the tasks in the category will be deleted (if there are any), and the category will be removed from the list of categories (you'll be prompted to confirm the deletion of the category).
+
+- Open the Task Manager of the category of task you want to manage.
+- Open the "Speedy Task Manager" (named "Speedy Manager)
+
+> [!TIP]
+> Go see the "Features inside the Task Manager" section to see what you can do inside the Task Manager.
+
+- Exit the Task Manager.
 
 ## Features inside the Task Manager
 
@@ -73,6 +82,7 @@ Inside the Speedy Manager, you'll be able to:
 > [!CAUTION]
 > If there are no tasks in a category after saving the tasks, the category file will be deleted automatically to avoid having empty files.
 It will be prompted to you that the file as been deleted.
+> Meanwhile, the category will still be displayed in the Main Menu and you'll be able to add tasks to it.
 
 ## Structure of the Code
 
