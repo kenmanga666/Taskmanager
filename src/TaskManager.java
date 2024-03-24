@@ -4,12 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.*;
-import org.json.*;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class TaskManager extends JFrame {
     private DefaultListModel<Task> taskListModel = new DefaultListModel<>();
@@ -24,7 +18,7 @@ public class TaskManager extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                saveTasksByCategory();
+                FileManager.saveTasksByCategory(taskListModel, null, isSpeedyManager, selectedcategory);
                 // Close the task manager and return to the main page
                 MainPage.main(null);
             }
@@ -32,7 +26,7 @@ public class TaskManager extends JFrame {
         setLocationRelativeTo(null);
         InitializeUI(this);
         if (!isSpeedyManager) {
-            loadTasksFromFile(selectedcategoryfilepath);
+            FileManager.loadTasksFromFile(selectedcategoryfilepath, taskListModel);
         }
     }
 
@@ -107,7 +101,7 @@ public class TaskManager extends JFrame {
                     }
                     taskListModel.addElement(task);
                     textField.setText("");
-                    saveTasksByCategory();
+                    FileManager.saveTasksByCategory(taskListModel, null, isSpeedyManager, selectedcategory);
                 }
             }
         });
@@ -169,194 +163,27 @@ public class TaskManager extends JFrame {
         // Remove the selected task from the list
         int selectedIndex = taskList.getSelectedIndex();
         if (selectedIndex != -1) {
-            int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this task?", "Delete Task", JOptionPane.YES_NO_OPTION);
+            Task selectedTask = taskListModel.getElementAt(selectedIndex);
+            int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this task? (selected task :" + selectedTask.getTitle() + ")", "Delete Task", JOptionPane.YES_NO_OPTION);
             if (choice == JOptionPane.YES_OPTION) {
+                DefaultListModel<Task> ancientListModel = taskListModel;
+                ancientListModel.getElementAt(selectedIndex).setRemoved();
                 taskListModel.remove(selectedIndex);
+                FileManager.saveTasksByCategory(taskListModel, ancientListModel, isSpeedyManager, selectedcategory);
             }
-        // If no task is selected, Remove all tasks
+        // If no task is selected, propose to remove all tasks
         } else if (taskListModel.size() > 0) {
             int choice = JOptionPane.showConfirmDialog(null, "Do you want to delete all tasks?", "Delete All Tasks", JOptionPane.YES_NO_OPTION);
             if (choice == JOptionPane.YES_OPTION) {
+                DefaultListModel<Task> ancientListModel = taskListModel;
+                for (int i = 0; i < ancientListModel.size(); i++) {
+                    ancientListModel.getElementAt(i).setRemoved();
+                }
                 taskListModel.removeAllElements();
+                FileManager.saveTasksByCategory(taskListModel, ancientListModel, isSpeedyManager, selectedcategory);
             }
         } else {
             JOptionPane.showMessageDialog(null, "There's no tasks to delete", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    /**
-     * Loads tasks from a file.
-     * @param filePath The file path from which the tasks will be loaded.
-     */
-    private void loadTasksFromFile(String filePath) {
-        File file = new File(filePath);
-        if (file.exists()) {
-            // If the file is empty, return
-            if (file.length() == 0) {
-                return;
-            }
-            try {
-                FileReader fileReader = new FileReader(file);
-                BufferedReader bufferedReader = new BufferedReader(fileReader);
-                StringBuilder jsonContent = new StringBuilder();
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    jsonContent.append(line);
-                }
-                bufferedReader.close();
-                JSONArray jsonArray = new JSONArray(jsonContent.toString());
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String title = jsonObject.getString("Title");
-                    Task.Priority priority = Task.Priority.valueOf(jsonObject.getString("Priority"));
-                    String description = jsonObject.getString("Description");
-                    String creationDate = jsonObject.getString("Creation date");
-                    Task[] subTaskList = Task.getSubTaskListFromString(jsonObject.getString("SubTasks"));
-                    String category = jsonObject.getString("Category");
-                    Task task = new Task(title, priority, description, subTaskList, creationDate, category);
-                    taskListModel.addElement(task);
-                }
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Saves the list of tasks to a file.
-     * @param tasks     The list of tasks to be saved.
-     * @param filePath  The file path where the tasks will be saved.
-     */
-    private static void saveTasksToFile(List<Task> tasks, String filePath) {
-        if (!new File(filePath).exists()) {
-            addFilePath(filePath);
-        }
-        try (FileWriter file = new FileWriter(filePath)) {
-            file.write("[");
-            // If the list of tasks is empty (all tasks have been removed), delete the file and the filepath from taskfiles.txt
-            if (tasks.isEmpty()) {
-                File fileToDelete = new File(filePath);
-                fileToDelete.delete();
-                removeFilePath(filePath);
-                return;
-            } else {
-                file.write("\n");
-            }
-            for (int i = 0; i < tasks.size(); i++) {
-                Task task = tasks.get(i);
-                file.write("  {\n");
-                file.write("    \"Title\": \"" + task.getTitle() + "\",\n");
-                file.write("    \"Priority\": \"" + task.getPriority() + "\",\n");
-                file.write("    \"Description\": \"" + task.getDescription() + "\",\n");
-                file.write("    \"Creation date\": \"" + task.getDueDate() + "\",\n");
-                file.write("    \"Category\": \"" + task.getCategory() + "\",\n");
-                file.write("    \"SubTasks\": \"[" + task.getSubTaskListToString() + "]\"\n");
-                file.write("  }");
-                // Add a comma and a new line if the task is not the last task
-                if (i < tasks.size() - 1) {
-                    file.write(",\n");
-                } else {
-                    file.write("\n");
-                }
-            }
-            file.write("]");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Save tasks to files based on category
-     */
-    private void saveTasksByCategory() {
-        Map<String, List<Task>> tasksByCategory = new HashMap<String, List<Task>>();
-
-        // If the list of tasks is empty (all tasks have been removed), delete the file and the filepath from taskfiles.txt
-        if (taskListModel.size() == 0 && !isSpeedyManager) {
-            File fileToDelete = new File("static/" + selectedcategory + ".json");
-            fileToDelete.delete();
-            removeFilePath("static/" + selectedcategory + ".json");
-            return;
-        }
-                
-        // Group tasks by category in a map (only if it's a speedy manager because else it's already grouped by category)
-        if (isSpeedyManager) {
-            for (int i = 0; i < taskListModel.size(); i++) {
-                Task task = taskListModel.getElementAt(i);
-                String category = task.getCategory();
-                if (!tasksByCategory.containsKey(category)) {
-                    tasksByCategory.put(category, new ArrayList<>());
-                }
-                tasksByCategory.get(category).add(task);
-            }
-        } else {
-            tasksByCategory.put(selectedcategory, new ArrayList<>());
-            for (int i = 0; i < taskListModel.size(); i++) {
-                Task task = taskListModel.getElementAt(i);
-                tasksByCategory.get(selectedcategory).add(task);
-            }
-        }
-
-        // Save tasks to files based on category
-        for (String category : tasksByCategory.keySet()) {
-            String filePath = "static/" + category + ".json";
-            List<Task> tasks = tasksByCategory.get(category);
-            saveTasksToFile(tasks, filePath);
-        }
-    }
-
-    /**
-     * Add the file path to the taskfiles.txt file
-     * @param filePath The file path to be added
-     */
-    private static void addFilePath(String filePath) {
-        try {
-            
-            FileWriter fileWriter = new FileWriter("static/taskfiles.txt", true);
-            FileReader fileReader = new FileReader("static/taskfiles.txt");
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            String line;
-            boolean fileExists = false;
-            while ((line = bufferedReader.readLine()) != null) {
-                if (line.equals(filePath)) {
-                    fileExists = true;
-                    break;
-                }
-            }
-            if (!fileExists) {
-                while ((line = bufferedReader.readLine()) != null) {
-                    fileWriter.write(line);
-                }
-                fileWriter.write(filePath + "\n");
-            }
-            fileWriter.close();
-            fileReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Remove the file path from the taskfiles.txt file
-     * @param filePath The file path to be removed
-     */
-    private static void removeFilePath(String filePath) {
-        try {
-            FileReader fileReader = new FileReader("static/taskfiles.txt");
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            StringBuilder newTaskFiles = new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                if (!line.equals(filePath)) {
-                    newTaskFiles.append(line + "\n");
-                }
-            }
-            FileWriter fileWriter = new FileWriter("static/taskfiles.txt");
-            fileWriter.write(newTaskFiles.toString());
-            fileWriter.close();
-            fileReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

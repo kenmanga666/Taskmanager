@@ -55,10 +55,16 @@ public class MainPage extends JFrame{
          * of the selected category when the button is clicked
          */
         viewTaskButton.addActionListener(e -> {
-            TaskManager taskManager = new TaskManager("Task Manager", getselectedcategory(), getselectedcategoryFilePath(), false);
-            taskManager.setVisible(true);
-            // Close the main page without exit the program
-            frame.dispose();
+            // If no category is selected prompt an error message
+            int index = categoryList.getSelectedIndex();
+            if (index == -1) {
+                JOptionPane.showMessageDialog(null, "Please select a category to open", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                TaskManager taskManager = new TaskManager("Task Manager", getselectedcategory(index), getselectedcategoryFilePath(index), false);
+                taskManager.setVisible(true);
+                // Close the main page without exit the program
+                frame.dispose();
+            }
         });
 
         speedTaskManagerButton.addActionListener(e -> {
@@ -77,8 +83,7 @@ public class MainPage extends JFrame{
      * Get the selected category from the list of categories
      * @return the selected category to be used in the TaskManager
      */
-    private String getselectedcategoryFilePath() {
-        int index = categoryList.getSelectedIndex();
+    private String getselectedcategoryFilePath(int index) {
         try {
             return model.getElementAt(index).getFilepath();
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -91,8 +96,7 @@ public class MainPage extends JFrame{
      * Get the selected category from the list of categories
      * @return the selected category to be used in the TaskManager
      */
-    private String getselectedcategory() {
-        int index = categoryList.getSelectedIndex();
+    private String getselectedcategory(int index) {
         try {
             return model.getElementAt(index).getName();
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -106,7 +110,7 @@ public class MainPage extends JFrame{
      * @param categoryList the list in which the categories are to be added
      */
     private void loadCategories(JList<Category> categoryList) {
-        File file = new File("static/taskfiles.txt");
+        File file = new File("static/categorys.txt");
         if (file.exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;

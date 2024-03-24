@@ -8,6 +8,7 @@ public class Task {
     private String dueDate;
     private String category;
     private String filepath;
+    private boolean removed = false;
 
     public Task(String title, Priority priority, String description, Task[] subTaskList, String dueDate, String category) {
         // If the task is a subtask (it doesn't have a description, subtask list, due date, and category)
@@ -116,6 +117,14 @@ public class Task {
 
     public String getFilepath() {
         return filepath;
+    }
+
+    public boolean isRemoved() {
+        return removed;
+    }
+
+    public void setRemoved() {
+        this.removed = true;
     }
 
     enum Priority {
