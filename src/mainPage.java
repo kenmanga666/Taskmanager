@@ -15,7 +15,7 @@ public class MainPage extends JFrame{
     
     private MainPage() {
         setTitle("Main Page");
-        setSize(500, 300);
+        setSize(550, 350);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         InitializeUI(this);
@@ -25,6 +25,12 @@ public class MainPage extends JFrame{
     private void InitializeUI(JFrame frame){
         // Create a panel to store the buttons
         JPanel panel = new JPanel();
+        // Create a button to add a new category and add it to the panel
+        JButton addCategoryButton = new JButton("Add Category");
+        panel.add(addCategoryButton);
+        // Create a button to remove a category and add it to the panel
+        JButton removeCategoryButton = new JButton("Remove Category");
+        panel.add(removeCategoryButton);
         // Create a button to view the tasks and add it to the panel
         JButton viewTaskButton = new JButton("View Tasks");
         panel.add(viewTaskButton);
@@ -50,6 +56,41 @@ public class MainPage extends JFrame{
         // Set the layout of the panel to BorderLayout
         panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
 
+        /*
+         * Add an action listener to the addCategoryButton
+         * to add a new category to the list of categories
+         */
+        addCategoryButton.addActionListener(e -> {
+            String categoryName = JOptionPane.showInputDialog(null, "Enter the name of the category", "Add Category", JOptionPane.PLAIN_MESSAGE);
+            if (categoryName != null) {
+                Category category = new Category(categoryName, "static/" + categoryName + ".json");
+                model.addElement(category);
+                FileManager.addFilePath("static/" + categoryName + ".json");
+            }
+        });
+
+        /*
+         * Add an action listener to the removeCategoryButton
+         * to remove the selected category
+         */
+        removeCategoryButton.addActionListener(e -> {
+            int index = categoryList.getSelectedIndex();
+            if (index == -1) {
+                JOptionPane.showMessageDialog(null, "Please select a category to remove", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                Category selectedCategory = model.getElementAt(index);
+                int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this category ? (selected category : "
+                + selectedCategory.getName() + ")", "Delete Category", JOptionPane.YES_NO_OPTION);
+                if (choice == JOptionPane.YES_OPTION) {
+                    model.removeElementAt(index);
+                    File file = new File(selectedCategory.getFilepath());
+                    FileManager.removeFilePath(selectedCategory.getFilepath());
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+            }
+        });
         /*
          * Add an action listener to the viewTaskButton to open the TaskManager
          * of the selected category when the button is clicked

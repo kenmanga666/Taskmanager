@@ -90,7 +90,7 @@ public class FileManager {
      *                        (used to check if all tasks have been removed)
      * If null, it means that the task manager is closing or a task has been added
      */
-    public static void saveTasksByCategory(DefaultListModel<Task> taskListModel, DefaultListModel<Task> ancientListModel, boolean isSpeedyManager, String selectedcategory) {
+    public static void saveTasksByCategory(DefaultListModel<Task> taskListModel, DefaultListModel<Task> ancientListModel, boolean isSpeedyManager, String selectedcategory, boolean isClosing) {
         Map<String, List<Task>> tasksByCategory = new HashMap<String, List<Task>>();
 
         // Check if the task manager is closing or if a task has been added
@@ -132,10 +132,11 @@ public class FileManager {
             List<Task> tasks = tasksByCategory.get(category);
             File correspondingFile = new File(filePath);
             saveTasksToFile(tasks, filePath);
-            if (isFileEmpty(correspondingFile)) {
+            if (isFileEmpty(correspondingFile) && isClosing) {
                 correspondingFile.delete();
-                JOptionPane.showMessageDialog(null, "The file " + filePath + " is now empty, so it has been deleted", "File Deleted", JOptionPane.INFORMATION_MESSAGE);
-                removeFilePath(filePath);
+                if (correspondingFile.exists()) {
+                    JOptionPane.showMessageDialog(null, "The file " + filePath + " is empty, so it has been deleted", "File Deleted", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         }
     }
@@ -144,7 +145,7 @@ public class FileManager {
      * Add the file path to the taskfiles.txt file
      * @param filePath The file path to be added
      */
-    private static void addFilePath(String filePath) {
+    public static void addFilePath(String filePath) {
         try {
             FileWriter fileWriter = new FileWriter("static/categorys.txt", true);
             FileReader fileReader = new FileReader("static/categorys.txt");
@@ -174,7 +175,7 @@ public class FileManager {
      * Remove the file path from the taskfiles.txt file
      * @param filePath The file path to be removed
      */
-    private static void removeFilePath(String filePath) {
+    public static void removeFilePath(String filePath) {
         try {
             FileReader fileReader = new FileReader("static/categorys.txt");
             BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -189,7 +190,7 @@ public class FileManager {
             fileWriter.write(newTaskFiles.toString());
             fileWriter.close();
             fileReader.close();
-            JOptionPane.showMessageDialog(null, "the filePath " + filePath +  ", as been removed from categorys.txt file", "FilePath Deleted", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "the selected category as been removed from the list of category", "Category Deleted", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
             e.printStackTrace();
         }

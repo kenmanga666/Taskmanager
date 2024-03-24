@@ -18,7 +18,7 @@ public class TaskManager extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                FileManager.saveTasksByCategory(taskListModel, null, isSpeedyManager, selectedcategory);
+                FileManager.saveTasksByCategory(taskListModel, null, isSpeedyManager, selectedcategory, true);
                 // Close the task manager and return to the main page
                 MainPage.main(null);
             }
@@ -101,7 +101,7 @@ public class TaskManager extends JFrame {
                     }
                     taskListModel.addElement(task);
                     textField.setText("");
-                    FileManager.saveTasksByCategory(taskListModel, null, isSpeedyManager, selectedcategory);
+                    FileManager.saveTasksByCategory(taskListModel, null, isSpeedyManager, selectedcategory, false);
                 }
             }
         });
@@ -164,12 +164,12 @@ public class TaskManager extends JFrame {
         int selectedIndex = taskList.getSelectedIndex();
         if (selectedIndex != -1) {
             Task selectedTask = taskListModel.getElementAt(selectedIndex);
-            int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this task? (selected task :" + selectedTask.getTitle() + ")", "Delete Task", JOptionPane.YES_NO_OPTION);
+            int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this task ? (selected task : " + selectedTask.getTitle() + ")", "Delete Task", JOptionPane.YES_NO_OPTION);
             if (choice == JOptionPane.YES_OPTION) {
                 DefaultListModel<Task> ancientListModel = taskListModel;
                 ancientListModel.getElementAt(selectedIndex).setRemoved();
                 taskListModel.remove(selectedIndex);
-                FileManager.saveTasksByCategory(taskListModel, ancientListModel, isSpeedyManager, selectedcategory);
+                FileManager.saveTasksByCategory(taskListModel, ancientListModel, isSpeedyManager, selectedcategory, false);
             }
         // If no task is selected, propose to remove all tasks
         } else if (taskListModel.size() > 0) {
@@ -180,7 +180,7 @@ public class TaskManager extends JFrame {
                     ancientListModel.getElementAt(i).setRemoved();
                 }
                 taskListModel.removeAllElements();
-                FileManager.saveTasksByCategory(taskListModel, ancientListModel, isSpeedyManager, selectedcategory);
+                FileManager.saveTasksByCategory(taskListModel, ancientListModel, isSpeedyManager, selectedcategory, false);
             }
         } else {
             JOptionPane.showMessageDialog(null, "There's no tasks to delete", "Error", JOptionPane.ERROR_MESSAGE);
