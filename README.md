@@ -19,6 +19,7 @@ The Task Manager allows you to manage your tasks with a User Interface (UI) that
 - For now, you can run the application by running the `mainPage.java` file. (I'm working on fixing the Makefile)
 
 ## Start of the Application / Main Menu
+
 At the start of the application, you will be prompted to the main
 page where you'll be able to choose between the following options:
 - Add a Category of tasks.
@@ -82,7 +83,7 @@ Inside the Speedy Manager, you'll be able to:
 
 > [!CAUTION]
 > If there are no tasks in a category after saving the tasks, the category file will be deleted automatically to avoid having empty files.
-It will be prompted to you that the file as been deleted.
+> It will be prompted to you that the file as been deleted.
 > Meanwhile, the category will still be displayed in the Main Menu and you'll be able to add tasks to it.
 
 ## Structure of the Code
@@ -97,7 +98,7 @@ The source code is organized in several classes:
 - `FileManager` : The class that contains the logic behind the saving and loading of the tasks in the json files.
 
 ## Authors
-Vallée Kenny
+[Vallée Kenny](https://github.com/kenmanga666)
 ---
 
 Enjoy managing your tasks with the Task Manager! If you have any questions or suggestions, feel free to share them.
