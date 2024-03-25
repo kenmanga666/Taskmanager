@@ -1,6 +1,6 @@
 # TaskManager
 
-Welcome to my Task Manager, this little application was developed in Java and allows you to manage your tasks with a simple command line interface.
+Welcome to my Task Manager, this little application was developed in Java and allows you to manage your tasks with a simple graphic user interface using Java Swing.
 
 ## How to Use
 
