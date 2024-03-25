@@ -9,7 +9,7 @@ The Task Manager allows you to manage your tasks with a User Interface (UI) that
 ## Instructions to Run the Application
 
 1. Make sure you have Java installed on your system.
-2. Clone the repository or download the source files.
+2. Clone the repository.
 3. Compile the source files using the Makefile with the command: `make build` or `make`.
 4. Run the application via the Makefile with the command: `make run`.
 
@@ -33,7 +33,8 @@ page where you'll be able to choose between the following options:
 - Open the "Speedy Task Manager" (named "Speedy Manager)
 
 > [!TIP]
-> Go see the "Features inside the Task Manager" section to see what you can do inside the Task Manager.
+> Go see the [Features inside the Task Manager](#features-inside-the-task-manager) section to see what you can do inside the Task Manager.
+> Go see the [Features inside the Speedy Manager](#features-inside-the-speedy-manager) section to see what you can do inside the Speedy Manager.
 
 - Exit the Task Manager.
 
