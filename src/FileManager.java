@@ -37,8 +37,12 @@ public class FileManager {
                     String creationDate = jsonObject.getString("Creation date");
                     Task[] subTaskList = Task.getSubTaskListFromString(jsonObject.getString("SubTasks"));
                     String category = jsonObject.getString("Category");
-                    Task task = new Task(title, priority, description, subTaskList, creationDate, category);
+                    int id = jsonObject.getInt("ID");
+                    Task task = new Task(title, priority, description, subTaskList, creationDate, category, id);
                     taskListModel.addElement(task);
+                    if (id >= TaskManager.taskID) {
+                        TaskManager.taskID = id + 1;
+                    }
                 }
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
@@ -64,6 +68,7 @@ public class FileManager {
                 }
                 file.write("  {\n");
                 file.write("    \"Title\": \"" + task.getTitle() + "\",\n");
+                file.write("    \"ID\": " + task.getID() + ",\n");
                 file.write("    \"Priority\": \"" + task.getPriority() + "\",\n");
                 file.write("    \"Description\": \"" + task.getDescription() + "\",\n");
                 file.write("    \"Creation date\": \"" + task.getDueDate() + "\",\n");
@@ -92,13 +97,25 @@ public class FileManager {
      */
     public static void saveTasksByCategory(DefaultListModel<Task> taskListModel, DefaultListModel<Task> ancientListModel, boolean isSpeedyManager, String selectedcategory, boolean isClosing) {
         Map<String, List<Task>> tasksByCategory = new HashMap<String, List<Task>>();
-
-        // Check if the task manager is closing or if a task has been added
-        if (ancientListModel != null) {
-            // Check if all tasks have been removed
-            if (taskListModel.size() == 0 && ancientListModel.size() != 0) {
-                for (int i = 0; i < ancientListModel.size(); i++) {
-                    Task task = ancientListModel.getElementAt(i);
+                
+        // Group tasks by category in a map (only if it's a speedy manager because else it's already grouped by category)
+        if (isSpeedyManager) {
+            // Check if the task manager is closing or if a task has been added
+            if (ancientListModel != null) {
+                // Check if all tasks have been removed
+                if (taskListModel.size() == 0 && ancientListModel.size() != 0) {
+                    for (int i = 0; i < ancientListModel.size(); i++) {
+                        Task task = ancientListModel.getElementAt(i);
+                        String category = task.getCategory();
+                        if (!tasksByCategory.containsKey(category)) {
+                            tasksByCategory.put(category, new ArrayList<>());
+                        }
+                        tasksByCategory.get(category).add(task);
+                    }
+                }
+            }else {
+                for (int i = 0; i < taskListModel.size(); i++) {
+                    Task task = taskListModel.getElementAt(i);
                     String category = task.getCategory();
                     if (!tasksByCategory.containsKey(category)) {
                         tasksByCategory.put(category, new ArrayList<>());
@@ -106,23 +123,23 @@ public class FileManager {
                     tasksByCategory.get(category).add(task);
                 }
             }
-        }
-                
-        // Group tasks by category in a map (only if it's a speedy manager because else it's already grouped by category)
-        if (isSpeedyManager) {
-            for (int i = 0; i < taskListModel.size(); i++) {
-                Task task = taskListModel.getElementAt(i);
-                String category = task.getCategory();
-                if (!tasksByCategory.containsKey(category)) {
-                    tasksByCategory.put(category, new ArrayList<>());
-                }
-                tasksByCategory.get(category).add(task);
-            }
+            
         } else {
-            tasksByCategory.put(selectedcategory, new ArrayList<>());
-            for (int i = 0; i < taskListModel.size(); i++) {
-                Task task = taskListModel.getElementAt(i);
-                tasksByCategory.get(selectedcategory).add(task);
+             // Check if the task manager is closing or if a task has been added
+             if (ancientListModel != null) {
+                // Check if all tasks have been removed
+                if (taskListModel.size() == 0 && ancientListModel.size() != 0) {
+                    for (int i = 0; i < ancientListModel.size(); i++) {
+                        Task task = ancientListModel.getElementAt(i);
+                        tasksByCategory.get(selectedcategory).add(task);
+                    }
+                }
+            }else {
+                tasksByCategory.put(selectedcategory, new ArrayList<>());
+                for (int i = 0; i < taskListModel.size(); i++) {
+                    Task task = taskListModel.getElementAt(i);
+                    tasksByCategory.get(selectedcategory).add(task);
+                }
             }
         }
 
@@ -134,9 +151,7 @@ public class FileManager {
             saveTasksToFile(tasks, filePath);
             if (isFileEmpty(correspondingFile) && isClosing) {
                 correspondingFile.delete();
-                if (correspondingFile.exists()) {
-                    JOptionPane.showMessageDialog(null, "The file " + filePath + " is empty, so it has been deleted", "File Deleted", JOptionPane.INFORMATION_MESSAGE);
-                }
+                JOptionPane.showMessageDialog(null, "The file " + filePath + " is empty, so it has been deleted", "File Deleted", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

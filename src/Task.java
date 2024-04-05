@@ -9,8 +9,9 @@ public class Task {
     private String category;
     private String filepath;
     private boolean removed = false;
+    private int id;
 
-    public Task(String title, Priority priority, String description, Task[] subTaskList, String dueDate, String category) {
+    public Task(String title, Priority priority, String description, Task[] subTaskList, String dueDate, String category, int taskID) {
         // If the task is a subtask (it doesn't have a description, subtask list, due date, and category)
         if (title != null && priority != null && description == null && subTaskList == null && dueDate == null && category == null) {
             this.title = title;
@@ -27,6 +28,7 @@ public class Task {
             this.dueDate = dueDate;
             this.category = category;
             this.filepath = "static/" + category + ".json";
+            this.id = taskID;
         }
     }
 
@@ -79,7 +81,7 @@ public class Task {
                 String[] subTaskArray = subTaskListArray[i].split(" \\|\\| ");
                 String title = subTaskArray[0].trim();
                 Priority priority = Priority.valueOf(subTaskArray[1].trim());
-                subTaskList[i] = new Task(title, priority, "", null, null, null);
+                subTaskList[i] = new Task(title, priority, "", null, null, null, 0);
             }
             return subTaskList;
         }
@@ -125,6 +127,10 @@ public class Task {
 
     public void setRemoved() {
         this.removed = true;
+    }
+
+    public int getID() {
+        return id;
     }
 
     enum Priority {

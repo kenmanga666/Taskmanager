@@ -56,7 +56,7 @@ public class SubTaskManager extends JFrame {
                 Task.Priority selectedPriority = (Task.Priority) JOptionPane.showInputDialog(frame, "Select priority:",
                         "Priority", JOptionPane.QUESTION_MESSAGE, null, Task.Priority.values(), Task.Priority.MEDIUM);
                 if (selectedPriority != null) {
-                    Task subTask = new Task(subTaskTitle, selectedPriority, "", null, null, null);
+                    Task subTask = new Task(subTaskTitle, selectedPriority, "", null, null, null, 0);
                     subTaskListModel.addElement(subTask);
                     currentTask.appendToSubTaskList(subTask);
                     textField.setText("");

@@ -2,10 +2,14 @@ package src;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class TaskManager extends JFrame {
+public class TaskManager extends JFrame implements KeyListener {
+    public static int taskID = 0;
+    JTextField textField;
     private DefaultListModel<Task> taskListModel = new DefaultListModel<>();
     private boolean isSpeedyManager;
     private String selectedcategory;
@@ -24,17 +28,35 @@ public class TaskManager extends JFrame {
             }
         });
         setLocationRelativeTo(null);
-        InitializeUI(this);
+        InitializeUI();
         if (!isSpeedyManager) {
             FileManager.loadTasksFromFile(selectedcategoryfilepath, taskListModel);
         }
     }
 
-    private void InitializeUI(JFrame frame) {
+    public void keyTyped(KeyEvent e) {
+    }
+    public void keyReleased(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            moveTaskUp(createTaskList());
+        }
+        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            moveTaskDown(createTaskList());
+        }
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            addtask(this);
+        }
+    }
+
+    private void InitializeUI() {
         // Create a panel to store the text area and the button
         JPanel panel1 = new JPanel();
         // Create a text area and a button to add a new task and add them to the panel1
-        JTextField textField = new JTextField(20);
+        textField = new JTextField(20);
         JButton addTaskButton = new JButton("Add Task");
         panel1.add(textField);
         panel1.add(addTaskButton);
@@ -64,47 +86,7 @@ public class TaskManager extends JFrame {
          * Add an action listener to the addTaskButton that
          * adds a new task to the list of tasks when the button is clicked.
          */
-        addTaskButton.addActionListener(e -> {
-            String taskTitle = textField.getText().trim();
-            if (!taskTitle.isEmpty()) {
-                /*
-                 * Display a dialog box to prompt the user to select a priority
-                 */
-                Task.Priority selectedPriority = (Task.Priority) JOptionPane.showInputDialog(frame, "Select priority:",
-                        "Priority", JOptionPane.QUESTION_MESSAGE, null, Task.Priority.values(), Task.Priority.MEDIUM);
-                /*
-                 * Display a dialog box to prompt the user to enter a category for the task if it is a speedy manager task
-                 */
-                String speedCategory = "";
-                if (isSpeedyManager) {
-                    speedCategory = JOptionPane.showInputDialog(frame, "Enter category:");
-                }
-                if (selectedPriority != null) {
-                    // Create a new task and add it to the list of tasks
-                    Task task;
-                    String dueDate = "";
-                    while (dueDate.length() != 10) {
-                        dueDate = JOptionPane.showInputDialog(frame, "Enter Due Date (dd-mm-yyyy):");
-                        // If the user cancels the input, return (do not add the task)
-                        if (dueDate == null) {
-                            return;
-                        }
-                        // If the date is not in the format dd-mm-yyyy, display an error message
-                        if (dueDate.length() != 10) {
-                            JOptionPane.showMessageDialog(null, "Invalid date format. Please enter the date in the format dd-mm-yyyy", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                    if (isSpeedyManager) {
-                        task = new Task(taskTitle, selectedPriority, "", null, dueDate, speedCategory);
-                    }else {
-                        task = new Task(taskTitle, selectedPriority, "", null, dueDate, selectedcategory);
-                    }
-                    taskListModel.addElement(task);
-                    textField.setText("");
-                    FileManager.saveTasksByCategory(taskListModel, null, isSpeedyManager, selectedcategory, false);
-                }
-            }
-        });
+        addTaskButton.addActionListener(e -> addtask(this));
         /*
          * Add an action listener to the removeTaskButton that
          * removes the selected task from the list of tasks
@@ -143,8 +125,8 @@ public class TaskManager extends JFrame {
         });
 
         // add the panels to the frame
-        frame.add(panel1, BorderLayout.SOUTH);
-        frame.add(panel2, BorderLayout.CENTER);
+        this.add(panel1, BorderLayout.SOUTH);
+        this.add(panel2, BorderLayout.CENTER);
     }
 
     private JList<Task> createTaskList() {
@@ -153,6 +135,49 @@ public class TaskManager extends JFrame {
         // Set the cell renderer for the task list
         taskList.setCellRenderer(new TaskListCellRenderer());
         return taskList;
+    }
+
+    private void addtask(JFrame frame){
+        String taskTitle = textField.getText().trim();
+            if (!taskTitle.isEmpty()) {
+                /*
+                 * Display a dialog box to prompt the user to select a priority
+                 */
+                Task.Priority selectedPriority = (Task.Priority) JOptionPane.showInputDialog(frame, "Select priority:",
+                        "Priority", JOptionPane.QUESTION_MESSAGE, null, Task.Priority.values(), Task.Priority.MEDIUM);
+                /*
+                 * Display a dialog box to prompt the user to enter a category for the task if it is a speedy manager task
+                 */
+                String speedCategory = "";
+                if (isSpeedyManager) {
+                    speedCategory = JOptionPane.showInputDialog(frame, "Enter category:");
+                }
+                if (selectedPriority != null) {
+                    // Create a new task and add it to the list of tasks
+                    Task task;
+                    String dueDate = "";
+                    while (dueDate.length() != 10) {
+                        dueDate = JOptionPane.showInputDialog(frame, "Enter Due Date (dd-mm-yyyy):");
+                        // If the user cancels the input, return (do not add the task)
+                        if (dueDate == null) {
+                            return;
+                        }
+                        // If the date is not in the format dd-mm-yyyy, display an error message
+                        if (dueDate.length() != 10) {
+                            JOptionPane.showMessageDialog(null, "Invalid date format. Please enter the date in the format dd-mm-yyyy", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                    if (isSpeedyManager) {
+                        task = new Task(taskTitle, selectedPriority, "", null, dueDate, speedCategory, taskID);
+                    }else {
+                        task = new Task(taskTitle, selectedPriority, "", null, dueDate, selectedcategory, taskID);
+                    }
+                    taskID++;
+                    taskListModel.addElement(task);
+                    textField.setText("");
+                    FileManager.saveTasksByCategory(taskListModel, null, isSpeedyManager, selectedcategory, false);
+                }
+            }
     }
 
     /**
@@ -184,6 +209,32 @@ public class TaskManager extends JFrame {
             }
         } else {
             JOptionPane.showMessageDialog(null, "There's no tasks to delete", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Move the selected task of 1 position up in the list of tasks if up key is pressed
+     * @param taskList The list of tasks
+     */
+    public void moveTaskUp(JList<Task> taskList) {
+        int selectedIndex = taskList.getSelectedIndex();
+        if (selectedIndex != -1 && selectedIndex != 0) {
+            Task task = taskListModel.getElementAt(selectedIndex);
+            taskListModel.remove(selectedIndex);
+            taskListModel.add(selectedIndex - 1, task);
+        }
+    }
+
+    /**
+     * Move the selected task of 1 position down in the list of tasks if down key is pressed
+     * @param taskList The list of tasks
+     */
+    public void moveTaskDown(JList<Task> taskList) {
+        int selectedIndex = taskList.getSelectedIndex();
+        if (selectedIndex != -1 && selectedIndex != taskListModel.size() - 1) {
+            Task task = taskListModel.getElementAt(selectedIndex);
+            taskListModel.remove(selectedIndex);
+            taskListModel.add(selectedIndex + 1, task);
         }
     }
 }
