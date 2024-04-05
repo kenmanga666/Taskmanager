@@ -52,6 +52,7 @@ The Task Manager will prompt you all the tasks you have in the category you chos
 - Click on "Manage Subtasks" Button to manage the subtasks of the selected task:
     - Add subtasks to a task.
     - Remove subtasks from a task.
+    - Move subtasks to reorder them like you want.
 
 > [!NOTE]
 > The Task Manager will save the tasks in a json file named after the category you chose. The task are automatically saved when you add, remove or edit a task and also when you quit it.
