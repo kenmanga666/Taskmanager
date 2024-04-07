@@ -43,7 +43,7 @@ At the start of the application, you will be prompted to the main page where you
 The Task Manager will prompt you all the tasks you have in the category you chose. Inside it, you'll be able to:
 - Add a task to the list. (to do so you'll have to enter the task's title inside the text field below the list of tasks and click on the "Add Task" Button, you'll be prompted to enter the task's Priority)
 - Remove a selected task from the list by clicking the "Remove Task" Button (you'll be prompted to confirm the removal of the task) / if no task is selected, you'll be prompted to delete all the tasks.
-- Move tasks to reorder them like you want by selecting a task and clicking on the 'up' or 'down' key on your keyboard.
+- Move tasks to reorder them like you want by selecting a task and clicking on the 'up' ('ʌ') or 'down'('v') button.
 - Click on "Open Task" Button to Open the selected task to see its details and edit them:
     - Edit the task's title.
     - Edit the task's priority.

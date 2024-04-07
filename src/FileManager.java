@@ -40,13 +40,39 @@ public class FileManager {
                     int id = jsonObject.getInt("ID");
                     Task task = new Task(title, priority, description, subTaskList, creationDate, category, id);
                     taskListModel.addElement(task);
-                    if (id >= TaskManager.taskID) {
-                        TaskManager.taskID = id + 1;
-                    }
                 }
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static int getIDFromFile() {
+        int id = 0;
+        File file = new File("static/ID.txt");
+        if (file.exists()) {
+            try {
+                FileReader fileReader = new FileReader(file);
+                BufferedReader bufferedReader = new BufferedReader(fileReader);
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    id = Integer.parseInt(line);
+                }
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return id;
+    }
+
+    public static void saveIDToFile(int id) {
+        try {
+            FileWriter fileWriter = new FileWriter("static/ID.txt");
+            fileWriter.write(Integer.toString(id));
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -86,7 +112,48 @@ public class FileManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+    }
+
+    private static Task[] getTasksFromCategoryFile(File file) {
+        Task[] tasks = new Task[0];
+        if (file.exists()) {
+            // If the file is empty, return
+            if (file.length() == 0) {
+                return tasks;
+            }
+            try {
+                FileReader fileReader = new FileReader(file);
+                BufferedReader bufferedReader = new BufferedReader(fileReader);
+                StringBuilder jsonContent = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    jsonContent.append(line);
+                }
+                bufferedReader.close();
+                JSONArray jsonArray = new JSONArray(jsonContent.toString());
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String title = jsonObject.getString("Title");
+                    Task.Priority priority = Task.Priority.valueOf(jsonObject.getString("Priority"));
+                    String description = jsonObject.getString("Description");
+                    String creationDate = jsonObject.getString("Creation date");
+                    Task[] subTaskList = Task.getSubTaskListFromString(jsonObject.getString("SubTasks"));
+                    String category = jsonObject.getString("Category");
+                    int id = jsonObject.getInt("ID");
+                    Task task = new Task(title, priority, description, subTaskList, creationDate, category, id);
+                    // add the task to the task list task[]
+                    Task[] temp = new Task[tasks.length + 1];
+                    for (int j = 0; j < tasks.length; j++) {
+                        temp[j] = tasks[j];
+                    }
+                    temp[tasks.length] = task;
+                    tasks = temp;
+                }
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return tasks;
     }
 
     /**
@@ -146,9 +213,27 @@ public class FileManager {
         // Save tasks to files based on category
         for (String category : tasksByCategory.keySet()) {
             String filePath = "static/" + category + ".json";
-            List<Task> tasks = tasksByCategory.get(category);
+            List<Task> tasksToSave = tasksByCategory.get(category);
             File correspondingFile = new File(filePath);
-            saveTasksToFile(tasks, filePath);
+            // Get the tasks from the file to compare with the tasks to be saved
+            if (isSpeedyManager) {
+                Task[] tasksFromFile = getTasksFromCategoryFile(correspondingFile);
+                for (Task task : tasksFromFile) {
+                    boolean taskExists = false;
+                    for (int i = 0; i < tasksToSave.size(); i++) {
+                        // If the task is in the list of tasks to be saved, break the loop and set taskExists to true
+                        if (task.getID() == tasksToSave.get(i).getID()) {
+                            taskExists = true;
+                            break;
+                        }
+                    }
+                    // If the task is not in the list of tasks to be saved, add it to the list
+                    if (!taskExists) {
+                        tasksToSave.add(task);
+                    }
+                }
+            }
+            saveTasksToFile(tasksToSave, filePath);
             if (isFileEmpty(correspondingFile) && isClosing) {
                 correspondingFile.delete();
                 JOptionPane.showMessageDialog(null, "The file " + filePath + " is empty, so it has been deleted", "File Deleted", JOptionPane.INFORMATION_MESSAGE);

@@ -53,7 +53,7 @@ public class MainPage extends JFrame{
         categoryList.setCellRenderer(new CategoryListCellRenderer());
         JScrollPane scrollPane = new JScrollPane(categoryList);
         panel2.add(scrollPane);
-        // Set the layout of the panel to BorderLayout
+        // Set the layout of the panel to BoxLayout
         panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
 
         /*
