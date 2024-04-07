@@ -8,6 +8,3 @@
 
 # Ignore .vscode folder
 .vscode
-
-# Ignore .jar files
-*.jar
