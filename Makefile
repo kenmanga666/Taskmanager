@@ -1,36 +1,40 @@
-# Nom du binaire à produire
+# Name of the binary to produce
 BINARY_NAME = TaskManager
 
-# Liste explicite des fichiers source
-SOURCES :=  src/mainPage.java \
+# Explicit list of source files
+SOURCES :=  src/MainPage.java \
+			src/FileManager.java \
 			src/TaskManager.java \
 			src/Task.java \
 			src/TaskListCellRenderer.java \
 			src/TaskDetails.java \
-			src/subTaskManager.java
+			src/SubTaskManager.java
 
-# Assurez-vous que le shell et l'encodage sont définis pour UTF-8
+# Path to the JSON library JAR file
+JSON_LIB := lib/json-20240303.jar
+
+# Make sure the shell and encoding are set to UTF-8
 SHELL := /bin/bash
 export LC_ALL=C.UTF-8
 
-# Commande par défaut
+# Default command
 default: build
 
-# Commande de build
+# Build command
 build:
-	@echo -e "Construction du projet..."
-	javac -d build -cp . $(SOURCES)
+	@echo -e "Building the project..."
+	javac -d build -cp $(JSON_LIB) $(SOURCES) 
 
-# Commande pour nettoyer le projet (supprimer le binaire)
+# Command to clean the project (remove the binary)
 clean:
-	@echo -e "Nettoyage..."
+	@echo -e "Cleaning..."
 	rm -rf build
 	rm -f $(BINARY_NAME)
 
-# Commande pour exécuter le programme
+# Command to run the program
 run:
-	@echo -e "Execution du programme..."
-	java -cp build src/$(BINARY_NAME)
+	@echo -e "Running the program..."
+	java -cp build src/$(BINARY_NAME) $(JSON_LIB)
 
-# Option 'phony' pour indiquer que 'clean', 'run', et 'build' ne sont pas des fichiers
+# 'Phony' option to indicate that 'clean', 'run', and 'build' are not files
 .PHONY: build clean run
