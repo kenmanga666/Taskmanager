@@ -23,6 +23,7 @@ default: build
 # Build command
 build:
 	@echo -e "Building the project..."
+	mkdir -p build
 	javac -d build -cp $(JSON_LIB) $(SOURCES)
 	clear
 	@echo -e "Build successful! Run the program with 'make run'."
