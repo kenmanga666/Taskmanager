@@ -10,13 +10,15 @@ The Task Manager allows you to manage your tasks with a User Interface (UI) that
 
 1. Make sure you have Java installed on your system.
 2. Clone the repository.
-3. Compile the source files using the Makefile with the command: `make build` or `make`.
-4. Run the application via the Makefile with the command: `make run`.
+3. Open the project in your favorite IDE (e.g. IntelliJ IDEA, Eclipse, etc.).
 
 > [!WARNING]
 > **The Makefile doesn't work for now (json import problems)**
-
+> 4. Compile the source files using the Makefile with the command: `make build` or `make`.
+> 5. Run the application via the Makefile with the command: `make run`.
 - For now, you can run the application by running the `mainPage.java` file. (I'm working on fixing the Makefile)
+6. Follow the instructions in the application to manage your tasks.
+- If you want to clean the project, you can use the Makefile with the command: `make clean`, it will remove the compiled files.
 
 ## Start of the Application / Main Menu
 
@@ -67,6 +69,11 @@ The Speedy Manager is a faster version of the Task Manager where you can add tas
 Inside the Speedy Manager, you'll be able to:
 - Add a task. (you'll be prompted to enter the task's priority but also the task's category)
 - Remove tasks
+
+> [!WARNING]
+> Deleting tasks in the Speedy Manager is currently not working, you'll have to use the "complete" Task Manager to delete tasks.
+> I'm working on fixing this issue, please be patient.
+
 - Click on "Open Task" Button to Open the selected task to see its details and edit them (if no task is selected, you'll be prompted to select a task first):
     - Edit the task's title.
     - Edit the task's priority.
@@ -98,8 +105,23 @@ The source code is organized in several classes:
 - `TaskListCellRenderer` : The class that contains the logic behind the rendering of the tasks in the list (to display the task's title centered in the list and color according to the priority of the task).
 - `FileManager` : The class that contains the logic behind the saving and loading of the tasks in the json files.
 
+## Contributions and Suggestions
+
+If you have any suggestions or contributions to make, feel free to share them. I'm open to any suggestions that could improve the application. For now, the application is still in development and I'm working on adding more features to it.
+To do that please follow the steps below:
+1. Create a new branch with the name of the feature you want to add or the bug you want to fix or your pseudo.
+2. Make your changes in the branch.
+3. commit your changes.
+4. Push your changes to the branch.
+5. Create a pull request to the main branch.
+
+I'll verify your changes later, if I take too long to verify them, feel free to remind me on Discord.
+
 ## Authors
 [Vallée Kenny](https://github.com/kenmanga666)
+    -> [Discord](https://discord.com/users/902641613514358825)
 ---
 
-Enjoy managing your tasks with the Task Manager! If you have any questions or suggestions, feel free to share them.
+### Contributors
+
+Enjoy managing your tasks with the Task Manager! Once again If you have any questions or suggestions, feel free to share them.
