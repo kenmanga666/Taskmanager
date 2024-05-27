@@ -120,8 +120,9 @@ I'll verify your changes later, if I take too long to verify them, feel free to 
 ## Authors
 [Vallée Kenny](https://github.com/kenmanga666)
     -> [Discord](https://discord.com/users/902641613514358825)
----
 
 ### Contributors
+
+---
 
 Enjoy managing your tasks with the Task Manager! Once again If you have any questions or suggestions, feel free to share them.
